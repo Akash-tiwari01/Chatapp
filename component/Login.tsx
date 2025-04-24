@@ -46,13 +46,12 @@ const Login = () => {
 
     setIsLoading(true);
     
-    // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      // Replace with your actual authentication logic
+      Alert.alert('Login attempted with:', email);
+
       console.log('Login attempted with:', email, password);
-      // On successful login:
-      // navigation.navigate('Home');
+
     }, 1500);
   };
 
@@ -109,7 +108,6 @@ const Login = () => {
         </View>
         <TouchableOpacity style= { styles.forgotPassword}>
           <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
-
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -117,7 +115,7 @@ const Login = () => {
           onPress={handleLogin}
           disabled={isLoading}
         >
-          (isLoading? (<ActivityIndicator color='#fff'/>):<Text style={styles.loginButton}>Sign In</Text>)
+          {isLoading? (<ActivityIndicator color='white'/>):(<Text style={styles.loginButtonText}>Sign In</Text>)}
 
         </TouchableOpacity>
 
@@ -144,15 +142,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 28,
+    textAlign:'center',
+    fontSize: 40,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 8,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 10,
     color: '#666',
     marginBottom: 40,
+    textAlign:'center',
+
   },
   inputContainer: {
     marginBottom: 20,
@@ -185,6 +186,7 @@ const styles = StyleSheet.create({
   forgotPassword: {
     alignSelf: 'flex-end',
     marginBottom: 20,
+    width:150
   },
   forgotPasswordText: {
     color: '#1e88e5',
@@ -192,7 +194,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     backgroundColor: '#1e88e5',
-    padding: 15,
+    padding:16,
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 20,
