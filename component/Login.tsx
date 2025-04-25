@@ -1,41 +1,31 @@
-import React, {useState} from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Alert, ActivityIndicator, NativeSyntheticEvent, TextInputChangeEventData } from 'react-native';
+import React, { useState } from 'react';
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  TextInput, 
+  TouchableOpacity, 
+  KeyboardAvoidingView, 
+  Platform, 
+  Alert, 
+  ActivityIndicator 
+} from 'react-native';
 
-
-// type LoginScreenProps = {
-//   navigation:{
-//     navigate:(screen:string) => void;
-//   }
-// }
-
-const Login = () => {
-
-  const [email, setEmail] = useState<string>('');
+const Login = ({ navigation }) => {
+  const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const validateEmail = (email: string): boolean => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(email);
-  };
-
-  const handleEmailChange = (e: NativeSyntheticEvent<TextInputChangeEventData>): void => {
-    setEmail(e.nativeEvent.text);
-  };
-
-  const handlePasswordChange = (e: NativeSyntheticEvent<TextInputChangeEventData>): void => {
-    setPassword(e.nativeEvent.text);
+  // Static credentials
+  const staticCredentials = {
+    username: 'admin',
+    password: 'password123'
   };
 
   const handleLogin = (): void => {
-    if (!email || !password) {
+    if (!username || !password) {
       Alert.alert('Error', 'Please fill in all fields');
-      return;
-    }
-
-    if (!validateEmail(email)) {
-      Alert.alert('Error', 'Please enter a valid email address');
       return;
     }
 
@@ -48,65 +38,64 @@ const Login = () => {
     
     setTimeout(() => {
       setIsLoading(false);
-      Alert.alert('Login attempted with:', email);
-
-      console.log('Login attempted with:', email, password);
+      
+      if (username === staticCredentials.username && password === staticCredentials.password) {
+        navigation.navigate('ChatRoom');
+      } else {
+        Alert.alert('Error', 'Invalid username or password');
+      }
 
     }, 1500);
   };
 
-
   return (
-    <KeyboardAvoidingView style={styles.container} >
-      <View style= {styles.innerContainer}>
+    <KeyboardAvoidingView 
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <View style={styles.innerContainer}>
         <Text style={styles.title}>
           Welcome Back
         </Text>
         <Text style={styles.subtitle}>Sign in to continue</Text>
+        
         <View style={styles.inputContainer}>
-          <Text style={styles.label}>Email</Text>
+          <Text style={styles.label}>Username</Text>
           <View style={styles.inputWrapper}>
-            {/* <Icon name='envelope' size = {20} color='#777' style= {styles.icon}/> */}
             <TextInput
               style={styles.input}
-              placeholder='Enter Your Email'
+              placeholder='Enter Your Username'
               placeholderTextColor='#999'
-              value={email}
-              onChange={handleEmailChange}
-              keyboardType='email-address'
+              value={username}
+              onChangeText={setUsername}
               autoCapitalize='none'
               autoCorrect={false}
-              />
-
+            />
           </View>
         </View>
+        
         <View style={styles.inputContainer}>
           <Text style={styles.label}>Password</Text>
           <View style={styles.inputWrapper}>
-            {/* <Icon name='lock' size={20} color='#777' style= {styles.icon} /> */}
             <TextInput
               style={styles.input}
               placeholder='Enter Your Password'
               placeholderTextColor='#999'
               value={password}
-              onChange={handlePasswordChange}
+              onChangeText={setPassword}
               secureTextEntry={!showPassword}
               autoCapitalize='none'
             />
             <TouchableOpacity
-              onPress={()=>setShowPassword(!showPassword)}
+              onPress={() => setShowPassword(!showPassword)}
               style={styles.eyeIcon}
             >
-              {/* <Icon 
-                name={showPassword ?  'eye-slash' : 'eye'} 
-                size={20}
-                color="#777"
-              /> */}
+              <Text>{showPassword ? '🙈' : '👁️'}</Text>
             </TouchableOpacity>
-
           </View>
         </View>
-        <TouchableOpacity style= { styles.forgotPassword}>
+        
+        <TouchableOpacity style={styles.forgotPassword}>
           <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
         </TouchableOpacity>
 
@@ -115,21 +104,23 @@ const Login = () => {
           onPress={handleLogin}
           disabled={isLoading}
         >
-          {isLoading? (<ActivityIndicator color='white'/>):(<Text style={styles.loginButtonText}>Sign In</Text>)}
-
+          {isLoading ? (
+            <ActivityIndicator color='white'/>
+          ) : (
+            <Text style={styles.loginButtonText}>Sign In</Text>
+          )}
         </TouchableOpacity>
 
         <View style={styles.signUpContainer}>
           <Text style={styles.signUpText}>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => {/*navigation.navigate('SignUp')*/}}>
+          <TouchableOpacity onPress={() => {}}>
             <Text style={styles.signUpLink}>Sign Up</Text>
           </TouchableOpacity>
         </View>
-
       </View>
     </KeyboardAvoidingView>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -142,7 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    textAlign:'center',
+    textAlign: 'center',
     fontSize: 40,
     fontWeight: 'bold',
     color: '#333',
@@ -152,8 +143,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     color: '#666',
     marginBottom: 40,
-    textAlign:'center',
-
+    textAlign: 'center',
   },
   inputContainer: {
     marginBottom: 20,
@@ -172,9 +162,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 12,
   },
-  icon: {
-    marginRight: 10,
-  },
   input: {
     flex: 1,
     height: 50,
@@ -186,7 +173,7 @@ const styles = StyleSheet.create({
   forgotPassword: {
     alignSelf: 'flex-end',
     marginBottom: 20,
-    width:150
+    width: 150
   },
   forgotPasswordText: {
     color: '#1e88e5',
@@ -194,7 +181,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     backgroundColor: '#1e88e5',
-    padding:16,
+    padding: 16,
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 20,
@@ -217,6 +204,4 @@ const styles = StyleSheet.create({
   },
 });
 
-
-
-export default Login
+export default Login;

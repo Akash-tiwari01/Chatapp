@@ -1,12 +1,28 @@
 import React from 'react';
-import { Text,SafeAreaView, View } from 'react-native';
+import { SafeAreaView, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './component/Login';
+import LocalChatRoom from './component/Chatroom';
+
+const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
-    <View style={{ flex: 1, backgroundColor: 'black' }}>
-        <Login/>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Login">
+        <Stack.Screen 
+          name="Login" 
+          component={Login} 
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen 
+          name="ChatRoom" 
+          component={LocalChatRoom}
+          options={{ title: 'Chat Room' }}
+        />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
